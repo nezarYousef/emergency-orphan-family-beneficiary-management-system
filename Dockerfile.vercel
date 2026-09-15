@@ -1,0 +1,10 @@
+FROM dunglas/frankenphp:php8.4-bookworm
+WORKDIR /app
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN install-php-extensions pdo_pgsql intl mbstring bcmath opcache
+COPY . .
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+RUN chown -R www-data:www-data storage bootstrap/cache
+ENV APP_ENV=production APP_DEBUG=false
+EXPOSE 8080
+CMD ["php-server", "-r", "public/", "--listen", ":8080"]
