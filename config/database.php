@@ -86,7 +86,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => str_replace('postgresql://', 'pgsql://', env('DATABASE_URL', env('DB_URL'))),
+            'url' => str_replace('postgresql://', 'pgsql://', (string) env('DATABASE_URL', env('DB_URL'))),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'laravel'),
