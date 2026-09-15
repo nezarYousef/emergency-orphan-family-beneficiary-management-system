@@ -1,0 +1,4 @@
+<?php
+namespace App\Http\Controllers;
+use App\Models\{Family,Beneficiary,Orphan,AidDistribution}; use Illuminate\Http\Request; use Symfony\Component\HttpFoundation\StreamedResponse;
+class ExportController extends Controller { public function __invoke(Request $r,string $type):StreamedResponse { $map=['families'=>Family::class,'beneficiaries'=>Beneficiary::class,'orphans'=>Orphan::class,'aid'=>AidDistribution::class]; abort_unless(isset($map[$type]),404); $rows=$map[$type]::query()->cursor(); return response()->streamDownload(function()use($rows){$out=fopen('php://output','w');$first=true;foreach($rows as $row){$data=$row->toArray();unset($data['password'],$data['remember_token']);if($first){fputcsv($out,array_keys($data));$first=false;}fputcsv($out,array_values($data));}fclose($out);},$type.'-'.now()->format('Ymd').'.csv',['Content-Type'=>'text/csv']);} }
