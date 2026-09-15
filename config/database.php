@@ -86,11 +86,11 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            // Vercel/Neon exposes DATABASE_URL; DB_URL remains supported for local deployments.
+            // Neon supplies an unpooled URL for migrations; DATABASE_URL and legacy DB_URL remain supported.
             'url' => preg_replace(
                 '/^postgres(?:ql)?:\/\//',
                 'pgsql://',
-                (string) (env('DATABASE_URL') ?: env('DB_URL')),
+                (string) (env('DATABASE_URL_UNPOOLED') ?: env('DATABASE_URL') ?: env('DB_URL')),
             ),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
