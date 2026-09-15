@@ -1,1 +1,4 @@
-@extends('layouts.app') @section('content')<h1>{{$title}}</h1><div class="table-responsive card"><table class="table table-striped mb-0"><thead><tr>@foreach($columns as $c)<th>{{str($c)->replace('_',' ')->title()}}</th>@endforeach</tr></thead><tbody>@forelse($items as $item)<tr>@foreach($columns as $c)<td>{{data_get($item,$c)}}</td>@endforeach</tr>@empty<tr><td colspan="{{count($columns)}}" class="p-4">No records found.</td></tr>@endforelse</tbody></table></div><div class="mt-3">{{$items->links()}}</div>@endsection
+@extends('layouts.app')
+@section('content')
+<h1>{{$title}}</h1><div class="table-responsive card"><table class="table table-striped mb-0"><thead><tr>@foreach($columns as $c)<th>{{str($c)->replace('_',' ')->title()}}</th>@endforeach</tr></thead><tbody>@forelse($items as $item)<tr>@foreach($columns as $c)<td>{{data_get($item,$c)}}</td>@endforeach</tr>@empty<tr><td colspan="{{count($columns)}}" class="p-4">No records found.</td></tr>@endforelse</tbody></table></div><div class="mt-3">{{$items->links()}}</div>
+@endsection

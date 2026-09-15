@@ -1,1 +1,4 @@
-@extends('layouts.app') @section('content')<h1>Reports</h1><div class="row g-4">@foreach([['Families by Governorate',$governorates],['Orphan Sponsorship',$sponsorship],['Vulnerability',$vulnerability],['Aid Summary',$aid]] as [$heading,$rows])<div class="col-md-6"><div class="card"><div class="card-header">{{$heading}}</div>@foreach($rows as $r)<div class="p-2 border-bottom">{{json_encode($r)}} </div>@endforeach</div></div>@endforeach</div>@endsection
+@extends('layouts.app')
+@section('content')
+<h1>Reports</h1><div class="row g-4">@foreach([['Families by Governorate',$governorates],['Orphan Sponsorship',$sponsorship],['Vulnerability',$vulnerability],['Aid Summary',$aid]] as [$heading,$rows])<div class="col-md-6"><div class="card"><div class="card-header">{{$heading}}</div>@foreach($rows as $r)<div class="p-2 border-bottom">{{json_encode($r)}} </div>@endforeach</div></div>@endforeach</div>
+@endsection
