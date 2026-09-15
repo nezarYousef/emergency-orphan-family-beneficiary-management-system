@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('LARAVEL_APP_URL') ?: env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
