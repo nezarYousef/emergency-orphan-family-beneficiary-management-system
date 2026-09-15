@@ -16,18 +16,6 @@ Route::get('/login', [AuthController::class, 'show'])->middleware('guest')->name
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-if (app()->hasDebugModeEnabled()) {
-    Route::get('/__runtime', function () {
-        $hosts = [];
-        foreach (['DATABASE_URL', 'DATABASE_URL_UNPOOLED', 'DB_URL', 'POSTGRES_URL'] as $name) {
-            $value = env($name);
-            $hosts[$name] = $value ? (parse_url($value, PHP_URL_HOST) ?: 'present') : 'empty';
-        }
-
-        return response()->json($hosts);
-    });
-}
-
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
