@@ -8,7 +8,7 @@ jobs:
       APP_ENV: production
       APP_DEBUG: false
       DB_CONNECTION: pgsql
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL_UNPOOLED }}
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
