@@ -48,6 +48,12 @@ See [docs/ERD.md](docs/ERD.md). Tables include users, families, beneficiaries, o
 
 GitHub Actions runs Composer, PostgreSQL migrations/seeding, route validation, and tests on every push. `Dockerfile.vercel` provides a production FrankenPHP image; production requires secure Vercel environment variables and managed PostgreSQL.
 
+## Live Demo
+
+Production: https://files-pasted-by-the-user-you-nizar9.vercel.app
+
+The Vercel project is named `emergency-orphan-family-beneficiary-management-system`; renaming the project preserved this existing production alias and GitHub integration.
+
 ## Security
 
 All demonstration records are fictional. Before real humanitarian use, add HTTPS, managed secrets, encrypted backups, stronger password policy, restricted database access, monitoring, retention policy, and formal privacy controls. Never commit `.env` or credentials.
