@@ -50,7 +50,7 @@ GitHub Actions runs Composer, PostgreSQL migrations/seeding, route validation, a
 
 ## Live Demo
 
-Production: https://files-pasted-by-the-user-you-nizar9.vercel.app
+Production: https://emergency-orphan-family-beneficiary-management-system-nizar9.vercel.app
 
 The Vercel project is named `emergency-orphan-family-beneficiary-management-system`; renaming the project preserved this existing production alias and GitHub integration.
 
