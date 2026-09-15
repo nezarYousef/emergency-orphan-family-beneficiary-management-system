@@ -15,11 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach ([['Admin','admin@example.com','admin'],['Data Entry','dataentry@example.com','data_entry'],['Viewer','viewer@example.com','viewer']] as [$name,$email,$role]) User::updateOrCreate(['email'=>$email],['name'=>$name,'role'=>$role,'password'=>bcrypt('password')]);
     }
 }

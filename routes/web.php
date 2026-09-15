@@ -1,7 +1,4 @@
 <?php
-
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
+use Illuminate\Support\Facades\Route; use App\Http\Controllers\{AuthController,DashboardController}; use App\Models\{Family,Beneficiary,Orphan,AidDistribution};
+Route::redirect('/','/dashboard'); Route::get('/login',[AuthController::class,'show'])->middleware('guest')->name('login'); Route::post('/login',[AuthController::class,'login'])->middleware('guest'); Route::post('/logout',[AuthController::class,'logout'])->middleware('auth')->name('logout');
+Route::middleware('auth')->group(function(){Route::get('/dashboard',DashboardController::class)->name('dashboard'); Route::get('/families',fn()=>view('index',['title'=>'Families','columns'=>['case_number','head_of_household_name','governorate','vulnerability_status'],'items'=>Family::latest()->paginate(15)])); Route::get('/beneficiaries',fn()=>view('index',['title'=>'Beneficiaries','columns'=>['beneficiary_number','full_name','gender','beneficiary_type'],'items'=>Beneficiary::latest()->paginate(15)])); Route::get('/orphans',fn()=>view('index',['title'=>'Orphans','columns'=>['orphan_number','orphan_status','sponsorship_status'],'items'=>Orphan::latest()->paginate(15)])); Route::get('/aid-distributions',fn()=>view('index',['title'=>'Aid Distributions','columns'=>['distribution_date','aid_type','amount','reference_number'],'items'=>AidDistribution::latest()->paginate(15)]));});

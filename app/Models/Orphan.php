@@ -1,0 +1,1 @@
+<?php namespace App\Models; use Illuminate\Database\Eloquent\SoftDeletes; class Orphan extends \Illuminate\Database\Eloquent\Model {use SoftDeletes; protected $guarded=[]; public function family(){return $this->belongsTo(Family::class);} public function beneficiary(){return $this->belongsTo(Beneficiary::class);} }
