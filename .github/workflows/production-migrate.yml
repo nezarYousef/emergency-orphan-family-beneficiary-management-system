@@ -18,5 +18,7 @@ jobs:
           coverage: none
       - run: composer install --no-dev --prefer-dist --no-interaction --no-progress
       - run: cp .env.example .env && php artisan key:generate
+      - name: Inspect production schema safely
+        run: php artisan tinker --execute="dump(collect(DB::select(\"select table_name from information_schema.tables where table_schema='public' order by table_name\"))->pluck('table_name')->all());"
       - run: php artisan migrate --force
       - run: php artisan db:seed --force
