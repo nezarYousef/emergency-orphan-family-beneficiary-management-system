@@ -86,7 +86,12 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => str_replace('postgresql://', 'pgsql://', (string) env('DATABASE_URL', env('DB_URL'))),
+            // Vercel/Neon exposes DATABASE_URL; DB_URL remains supported for local deployments.
+            'url' => preg_replace(
+                '/^postgres(?:ql)?:\/\//',
+                'pgsql://',
+                (string) (env('DATABASE_URL') ?: env('DB_URL')),
+            ),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'laravel'),
