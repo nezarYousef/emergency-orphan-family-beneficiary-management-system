@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/aid-distributions/{aidDistribution}', [AidDistributionController::class, 'show'])->name('aid.show');
     Route::get('/aid-distributions/{aidDistribution}/edit', [AidDistributionController::class, 'edit'])->middleware('role:admin,data_entry');
     Route::put('/aid-distributions/{aidDistribution}', [AidDistributionController::class, 'update'])->middleware('role:admin,data_entry');
+    Route::delete('/aid-distributions/{aidDistribution}', [AidDistributionController::class, 'destroy'])->middleware('role:admin');
 
     Route::get('/audit-logs', AuditLogController::class)->middleware('role:admin')->name('audit.index');
 

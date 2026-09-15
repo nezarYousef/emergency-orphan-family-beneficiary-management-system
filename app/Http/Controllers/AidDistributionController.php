@@ -68,6 +68,13 @@ class AidDistributionController extends Controller
         return redirect('/aid-distributions/'.$aidDistribution->id)->with('status', 'Aid distribution updated.');
     }
 
+    public function destroy(AidDistribution $aidDistribution)
+    {
+        $aidDistribution->delete();
+
+        return redirect('/aid-distributions')->with('status', 'Aid distribution removed.');
+    }
+
     private function validated(Request $request): array
     {
         return $request->validate([
