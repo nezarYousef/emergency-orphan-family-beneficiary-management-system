@@ -8,4 +8,4 @@ RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoload
 RUN chown -R www-data:www-data storage bootstrap/cache
 ENV APP_ENV=production APP_DEBUG=false
 EXPOSE 8080
-CMD ["php-server", "-r", "public/", "--listen", ":8080"]
+CMD ["frankenphp", "php-server", "-r", "public/", "--listen", ":8080"]
