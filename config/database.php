@@ -90,7 +90,7 @@ return [
             'url' => preg_replace(
                 '/^postgres(?:ql)?:\/\//',
                 'pgsql://',
-                (string) (env('LARAVEL_DATABASE_URL') ?: env('DATABASE_URL') ?: env('DATABASE_URL_UNPOOLED') ?: env('DB_URL')),
+                (string) (env('DATABASE_URL') ?: env('DATABASE_URL_UNPOOLED') ?: env('DB_URL') ?: env('LARAVEL_DATABASE_URL')),
             ),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
@@ -114,7 +114,7 @@ return [
             'url' => preg_replace(
                 '/^postgres(?:ql)?:\/\//',
                 'pgsql://',
-                (string) (env('DATABASE_URL_UNPOOLED') ?: env('LARAVEL_DATABASE_URL') ?: env('DATABASE_URL') ?: env('DB_URL')),
+                (string) (env('DATABASE_URL_UNPOOLED') ?: env('DATABASE_URL') ?: env('DB_URL') ?: env('LARAVEL_DATABASE_URL')),
             ),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
