@@ -4,7 +4,7 @@
 
 The application runs as a FrankenPHP container on Vercel with Neon PostgreSQL as the external database. A Node builder stage compiles the Vite assets before the PHP image is started.
 
-Production URL: https://emergency-beneficiary-management-nizar9.vercel.app
+Production URL: https://emergency-orphan-family-beneficiary-nizar9.vercel.app
 
 ## Environment variables
 
@@ -14,7 +14,7 @@ Set these in Vercel Production only. Do not commit their values:
 APP_ENV=production
 APP_DEBUG=false
 APP_KEY=<generated Laravel key>
-APP_URL=https://emergency-beneficiary-management-nizar9.vercel.app
+APP_URL=https://emergency-orphan-family-beneficiary-nizar9.vercel.app
 DB_CONNECTION=pgsql
 DATABASE_URL=<Neon pooled or unpooled connection string>
 ```
