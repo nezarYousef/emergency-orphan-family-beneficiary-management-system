@@ -29,7 +29,7 @@
                     <span><strong>{{ $user->name }}</strong><small>{{ str($user->role)->replace('_', ' ')->title() }}</small></span>
                 </div>
                 <nav class="sidebar-nav" aria-label="Main menu">
-                    <span class="nav-label">Workspace</span>
+                    <span class="nav-label">{{ $user->isAdmin() ? 'Administration' : ($user->isDataEntry() ? 'Data entry' : 'Read-only workspace') }}</span>
                     <a class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><span aria-hidden="true">⌂</span> Overview</a>
                     <a class="sidebar-link {{ request()->routeIs('families.*') ? 'active' : '' }}" href="{{ route('families.index') }}"><span aria-hidden="true">◌</span> Families</a>
                     <a class="sidebar-link {{ request()->routeIs('beneficiaries.*') ? 'active' : '' }}" href="{{ route('beneficiaries.index') }}"><span aria-hidden="true">♧</span> Beneficiaries</a>
@@ -37,10 +37,13 @@
                     <a class="sidebar-link {{ request()->routeIs('aid.*') ? 'active' : '' }}" href="{{ route('aid.index') }}"><span aria-hidden="true">▣</span> Aid distributions</a>
                     <span class="nav-label mt-4">Insights</span>
                     <a class="sidebar-link {{ request()->routeIs('reports') ? 'active' : '' }}" href="{{ route('reports') }}"><span aria-hidden="true">◫</span> Reports</a>
-                    @if ($user->role === 'admin')
+                    @can('manage-users')
+                        <span class="nav-label mt-4">Administration</span>
                         <a class="sidebar-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}"><span aria-hidden="true">♙</span> Users</a>
+                    @endcan
+                    @can('view-audit-logs')
                         <a class="sidebar-link {{ request()->routeIs('audit.index') ? 'active' : '' }}" href="{{ route('audit.index') }}"><span aria-hidden="true">⌁</span> Audit logs</a>
-                    @endif
+                    @endcan
                 </nav>
                 <div class="sidebar-footer">
                     <a class="sidebar-link" href="{{ route('home') }}"><span aria-hidden="true">↗</span> Public home</a>
@@ -53,7 +56,7 @@
             <div class="app-main-wrap">
                 <header class="app-topbar">
                     <button class="sidebar-toggle" type="button" aria-controls="app-sidebar" aria-expanded="false" aria-label="Open navigation">☰</button>
-                    <div class="topbar-context"><span class="status-dot" aria-hidden="true"></span><span>Operations workspace</span></div>
+                    <div class="topbar-context"><span class="status-dot" aria-hidden="true"></span><span>{{ $user->isAdmin() ? 'Administration' : ($user->isDataEntry() ? 'Data entry workspace' : 'Read-only overview') }}</span><span class="role-badge">{{ str($user->role)->replace('_', ' ')->upper() }}</span></div>
                     <div class="topbar-actions"><span class="d-none d-sm-inline text-muted small">{{ now()->format('D, d M Y') }}</span><span class="topbar-avatar" aria-hidden="true">{{ strtoupper(substr($user->name, 0, 1)) }}</span></div>
                 </header>
                 <main id="main-content" class="app-main" tabindex="-1">

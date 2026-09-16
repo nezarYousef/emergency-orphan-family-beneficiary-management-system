@@ -13,6 +13,8 @@ class ExportController extends Controller
 {
     public function __invoke(Request $request, string $type): StreamedResponse
     {
+        abort_unless($request->user()?->canExportData(), 403);
+
         $query = match ($type) {
             'families' => $this->families($request),
             'beneficiaries' => $this->beneficiaries($request),

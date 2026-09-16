@@ -56,5 +56,5 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->except('show')->middleware('role:admin');
 
     Route::get('/reports', ReportController::class)->name('reports');
-    Route::get('/export/{type}', ExportController::class)->name('export');
+    Route::get('/export/{type}', ExportController::class)->middleware('role:admin')->name('export');
 });

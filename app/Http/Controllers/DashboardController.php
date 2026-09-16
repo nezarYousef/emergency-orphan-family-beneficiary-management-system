@@ -12,7 +12,10 @@ class DashboardController extends Controller
 {
     public function __invoke()
     {
+        $user = auth()->user();
+
         return view('dashboard', [
+            'user' => $user,
             'families' => Family::count(),
             'beneficiaries' => Beneficiary::count(),
             'orphans' => Orphan::count(),
@@ -22,6 +25,12 @@ class DashboardController extends Controller
             'recentFamilies' => Family::latest()->take(5)->get(),
             'recentAid' => AidDistribution::with('family')->latest('distribution_date')->take(5)->get(),
             'familiesByRegion' => Family::query()->select('governorate', DB::raw('count(*) as total'))->groupBy('governorate')->orderByDesc('total')->get(),
+            'myEntriesToday' => $user->isDataEntry()
+                ? Family::where('created_by', $user->id)->whereDate('created_at', today())->count()
+                    + Beneficiary::where('created_by', $user->id)->whereDate('created_at', today())->count()
+                    + AidDistribution::where('created_by', $user->id)->whereDate('created_at', today())->count()
+                    + Orphan::where('created_by', $user->id)->whereDate('created_at', today())->count()
+                : 0,
         ]);
     }
 }

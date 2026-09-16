@@ -52,6 +52,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .card { border: 1px solid var(--line); border-radius: 1rem; box-shadow: 0 6px 20px rgba(16,42,67,.035); }
 .card-header { border-bottom: 1px solid var(--line); color: var(--navy); background: white; font-weight: 750; }
 .table-card { overflow: hidden; background: white; }
+.pagination { gap: .25rem; margin-bottom: 0; }
+.pagination .page-link { min-width: 2.25rem; border-radius: .5rem; text-align: center; }
+.role-badge { display: inline-flex; align-items: center; padding: .2rem .5rem; border: 1px solid rgba(18,181,203,.35); border-radius: 999px; color: #d9e2ec; font-size: .68rem; font-weight: 700; letter-spacing: .08em; }
 .table-card .table-responsive { margin-bottom: 0; }
 .table { margin-bottom: 0; vertical-align: middle; }
 .table thead th { padding: .85rem 1rem; color: var(--muted); background: #f7fafc; border-bottom: 1px solid var(--line); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
