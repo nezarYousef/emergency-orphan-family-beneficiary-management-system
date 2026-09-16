@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ $title ?? 'Something went wrong' }} | CareTrack</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">@if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot'))) @vite(['resources/css/app.css', 'resources/js/app.js']) @endif</head>
+<body class="error-page"><main class="error-card" aria-labelledby="error-title"><div class="error-code" aria-hidden="true">{{ $code ?? '!' }}</div><h1 id="error-title" class="h2">{{ $heading ?? 'Something went wrong' }}</h1><p class="text-muted">{{ $message ?? 'We could not complete that request. Please try again or return to the workspace.' }}</p><div class="d-flex flex-wrap justify-content-center gap-2"><a class="btn btn-primary" href="{{ auth()->check() ? route('dashboard') : route('home') }}">{{ auth()->check() ? 'Back to dashboard' : 'Back to home' }}</a>@if(auth()->check())<a class="btn btn-outline-secondary" href="{{ url()->previous() }}">Go back</a>@endif</div></main></body>
+</html>

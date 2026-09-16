@@ -1,1 +1,25 @@
-<?php namespace App\Models; use Illuminate\Database\Eloquent\SoftDeletes; class Beneficiary extends \Illuminate\Database\Eloquent\Model {use SoftDeletes; protected $guarded=[]; protected $casts=['date_of_birth'=>'date','disability_status'=>'boolean']; public function family(){return $this->belongsTo(Family::class);} public function orphan(){return $this->hasOne(Orphan::class);} }
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+ class Beneficiary extends Model
+{
+    use SoftDeletes;
+
+    protected $guarded = [];
+
+    protected $casts = ['date_of_birth' => 'date', 'disability_status' => 'boolean'];
+
+    public function family()
+    {
+        return $this->belongsTo(Family::class);
+    }
+
+    public function orphan()
+    {
+        return $this->hasOne(Orphan::class);
+    }
+}

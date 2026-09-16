@@ -50,4 +50,31 @@ class AccessAndWorkflowTest extends TestCase
         $this->get('/audit-logs')->assertOk();
         $this->get('/reports')->assertOk();
     }
+
+    public function test_inactive_users_cannot_sign_in(): void
+    {
+        $user = User::factory()->create(['email' => 'inactive@example.com', 'is_active' => false]);
+
+        $this->post('/login', ['email' => $user->email, 'password' => 'password'])
+            ->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
+    public function test_viewers_can_export_records_without_write_access(): void
+    {
+        $viewer = User::factory()->create(['role' => 'viewer']);
+
+        $this->actingAs($viewer)->get('/export/families')
+            ->assertOk()
+            ->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
+    }
+
+    public function test_admin_can_manage_users_but_viewer_cannot(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->get('/users')->assertOk();
+
+        $viewer = User::factory()->create(['role' => 'viewer']);
+        $this->actingAs($viewer)->get('/users')->assertForbidden();
+    }
 }

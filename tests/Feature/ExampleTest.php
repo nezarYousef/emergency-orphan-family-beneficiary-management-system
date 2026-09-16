@@ -10,10 +10,12 @@ class ExampleTest extends TestCase
     /**
      * A basic test example.
      */
-    public function test_guests_are_redirected_to_login(): void
+    public function test_public_home_is_available_without_authentication(): void
     {
         $response = $this->get('/');
 
-        $response->assertRedirect('/dashboard');
+        $response->assertOk();
+        $response->assertSee('Turn urgent needs into');
+        $response->assertSee('Open the workspace');
     }
 }

@@ -1,0 +1,1 @@
+@php($code = 403) @php($title = 'Access denied') @php($heading = 'You do not have access to this area') @php($message = 'Your role does not permit this action. If you believe this is incorrect, contact an administrator.') @include('errors.layout')

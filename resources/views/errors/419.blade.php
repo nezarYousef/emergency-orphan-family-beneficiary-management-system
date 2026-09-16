@@ -1,0 +1,1 @@
+@php($code = 419) @php($title = 'Session expired') @php($heading = 'Your session needs a refresh') @php($message = 'For your security, the form token expired. Please return to the page and try again.') @include('errors.layout')

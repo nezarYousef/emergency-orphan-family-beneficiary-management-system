@@ -1,9 +1,18 @@
+FROM node:22-bookworm-slim AS frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY resources ./resources
+COPY vite.config.js ./
+RUN npm run build
+
 FROM dunglas/frankenphp:php8.4-bookworm
 WORKDIR /app
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN apt-get update && apt-get install -y --no-install-recommends unzip zip && rm -rf /var/lib/apt/lists/*
 RUN install-php-extensions pdo_pgsql intl mbstring bcmath opcache zip
 COPY . .
+COPY --from=frontend /app/public/build ./public/build
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 RUN chown -R www-data:www-data storage bootstrap/cache
 ENV APP_ENV=production APP_DEBUG=false

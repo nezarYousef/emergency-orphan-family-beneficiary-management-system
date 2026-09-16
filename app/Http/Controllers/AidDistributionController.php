@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AidDistributionRequest;
 use App\Models\AidDistribution;
 use App\Models\AuditLog;
 use App\Models\Beneficiary;
 use App\Models\Family;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AidDistributionController extends Controller
 {
@@ -34,12 +36,16 @@ class AidDistributionController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(AidDistributionRequest $request)
     {
         $data = $this->validated($request);
         $data['created_by'] = auth()->id();
-        $distribution = AidDistribution::create($data);
-        $this->audit($request, 'created', $distribution, $data);
+        $distribution = DB::transaction(function () use ($data, $request) {
+            $distribution = AidDistribution::create($data);
+            $this->audit($request, 'created', $distribution, $data);
+
+            return $distribution;
+        });
 
         return redirect('/aid-distributions')->with('status', 'Aid distribution recorded.');
     }
@@ -58,12 +64,14 @@ class AidDistributionController extends Controller
         ]);
     }
 
-    public function update(Request $request, AidDistribution $aidDistribution)
+    public function update(AidDistributionRequest $request, AidDistribution $aidDistribution)
     {
         $data = $this->validated($request);
         $data['updated_by'] = auth()->id();
-        $aidDistribution->update($data);
-        $this->audit($request, 'updated', $aidDistribution, $data);
+        DB::transaction(function () use ($data, $aidDistribution, $request): void {
+            $aidDistribution->update($data);
+            $this->audit($request, 'updated', $aidDistribution, $data);
+        });
 
         return redirect('/aid-distributions/'.$aidDistribution->id)->with('status', 'Aid distribution updated.');
     }
@@ -75,20 +83,9 @@ class AidDistributionController extends Controller
         return redirect('/aid-distributions')->with('status', 'Aid distribution removed.');
     }
 
-    private function validated(Request $request): array
+    private function validated(AidDistributionRequest $request): array
     {
-        return $request->validate([
-            'family_id' => 'required|exists:families,id',
-            'beneficiary_id' => 'nullable|exists:beneficiaries,id',
-            'aid_type' => 'required|string|max:100',
-            'distribution_date' => 'required|date',
-            'quantity' => 'nullable|numeric|min:0',
-            'amount' => 'nullable|numeric|min:0',
-            'currency' => 'nullable|string|size:3',
-            'provider_organization' => 'nullable|string|max:255',
-            'reference_number' => 'nullable|string|max:100',
-            'notes' => 'nullable|string',
-        ]);
+        return $request->validated();
     }
 
     private function audit(Request $request, string $action, AidDistribution $distribution, array $data): void

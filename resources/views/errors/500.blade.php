@@ -1,0 +1,1 @@
+@php($code = 500) @php($title = 'Application error') @php($heading = 'We could not complete that request') @php($message = 'The team has been notified through the application logs. Please try again in a moment.') @include('errors.layout')
