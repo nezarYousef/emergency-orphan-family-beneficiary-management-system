@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+.git
+.github
+.vercel
+node_modules
+work
+outputs
+storage/logs
