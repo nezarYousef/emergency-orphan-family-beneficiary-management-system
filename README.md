@@ -64,11 +64,11 @@ The production image uses FrankenPHP and builds the Vite assets in a Node builde
 
 ## Screenshots
 
-Final visual checks cover the public landing page, the dashboard, and the mobile navigation at 375px, 768px, and 1440px. The latest captures are stored in `docs/screenshots/`.
+Final visual checks cover the public landing page, the dashboard, and the mobile navigation at 375px, 768px, and 1440px. The latest landing captures are stored in `docs/screenshots/`.
 
 ![CareTrack landing page](docs/screenshots/landing-desktop.png)
 
-![CareTrack dashboard](docs/screenshots/dashboard-desktop.png)
+![CareTrack landing page at mobile width](docs/screenshots/landing-mobile.png)
 
 ## Security
 
