@@ -10,7 +10,28 @@ use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\OrphanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/__diagnostic/runtime', function (Request $request) {
+    abort_unless($request->header('X-Codex-Diagnostic') === 'runtime', 404);
+
+    try {
+        return response()->json([
+            'db_default' => config('database.default'),
+            'db_driver' => DB::connection()->getDriverName(),
+            'users' => DB::table('users')->count(),
+            'session_driver' => config('session.driver'),
+            'cache_store' => config('cache.default'),
+            'app_key_configured' => filled(config('app.key')),
+            'auth_validate' => Auth::validate(['email' => 'admin@example.com', 'password' => 'password']),
+        ]);
+    } catch (\Throwable $exception) {
+        return response()->json(['type' => $exception::class, 'message' => $exception->getMessage()], 500);
+    }
+});
 
 Route::view('/', 'landing')->name('home');
 Route::get('/login', [AuthController::class, 'show'])->middleware('guest')->name('login');
