@@ -15,6 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends unzip zip && rm
 RUN install-php-extensions pdo_pgsql
 COPY . .
 COPY --from=frontend /app/public/build ./public/build
+# Never allow a developer-local dotenv file to override Vercel's runtime
+# environment variables inside the production image.
+RUN rm -f .env .env.production .env.production.local .env.development .env.development.local .env.test .env.testing
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 RUN chown -R www-data:www-data storage bootstrap/cache
 ENV APP_ENV=production APP_DEBUG=false
