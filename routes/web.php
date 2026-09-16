@@ -11,24 +11,12 @@ use App\Http\Controllers\OrphanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
-use Throwable;
 
 Route::view('/', 'landing')->name('home');
 Route::get('/login', [AuthController::class, 'show'])->middleware('guest')->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware(['guest', 'throttle:login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// Temporary deployment diagnostic; remove after the production runtime is verified.
-Route::get('/__diagnostic/db', function () {
-    try {
-        DB::connection()->getPdo();
-
-        return response()->json(['ok' => true, 'driver' => config('database.default')]);
-    } catch (Throwable $exception) {
-        return response()->json(['ok' => false, 'type' => $exception::class, 'message' => $exception->getMessage()], 500);
-    }
-});
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
