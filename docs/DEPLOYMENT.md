@@ -19,7 +19,7 @@ DB_CONNECTION=pgsql
 DATABASE_URL=<Neon pooled or unpooled connection string>
 ```
 
-Laravel resolves the PostgreSQL URL in this order: `LARAVEL_DATABASE_URL`, `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, then legacy `DB_URL`.
+Laravel resolves the PostgreSQL URL in this order: `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, legacy `DB_URL`, then optional `LARAVEL_DATABASE_URL` compatibility.
 
 ## Safe database release sequence
 

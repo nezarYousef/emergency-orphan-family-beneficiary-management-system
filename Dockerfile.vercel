@@ -10,7 +10,9 @@ FROM dunglas/frankenphp:php8.4-bookworm
 WORKDIR /app
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN apt-get update && apt-get install -y --no-install-recommends unzip zip && rm -rf /var/lib/apt/lists/*
-RUN install-php-extensions pdo_pgsql intl mbstring bcmath opcache zip
+# FrankenPHP already includes the common Laravel extensions; only install the
+# PostgreSQL driver required by Neon to keep cold Vercel builds fast and small.
+RUN install-php-extensions pdo_pgsql
 COPY . .
 COPY --from=frontend /app/public/build ./public/build
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
