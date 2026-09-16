@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Throwable;
 
 Route::get('/__diagnostic/runtime', function (Request $request) {
     abort_unless($request->header('X-Codex-Diagnostic') === 'runtime', 404);
@@ -28,7 +27,7 @@ Route::get('/__diagnostic/runtime', function (Request $request) {
             'cache_store' => config('cache.default'),
             'auth_validate' => Auth::validate(['email' => 'admin@example.com', 'password' => 'password']),
         ]);
-    } catch (Throwable $exception) {
+    } catch (\Throwable $exception) {
         return response()->json(['type' => $exception::class, 'message' => $exception->getMessage()], 500);
     }
 });
