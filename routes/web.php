@@ -11,18 +11,24 @@ use App\Http\Controllers\OrphanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/__diagnostic/runtime', function (Request $request) {
     abort_unless($request->header('X-Codex-Diagnostic') === 'runtime', 404);
 
     try {
+        $hostHash = function (?string $url): string {
+            $host = $url ? (parse_url(str_replace('postgres://', 'pgsql://', $url), PHP_URL_HOST) ?: 'invalid') : 'empty';
+
+            return substr(hash('sha256', $host), 0, 12);
+        };
+
         return response()->json([
-            'db_driver' => DB::connection()->getDriverName(),
-            'users' => DB::table('users')->count(),
-            'auth_validate' => Auth::validate(['email' => 'admin@example.com', 'password' => 'password']),
+            'env_database_url_hash' => $hostHash(env('DATABASE_URL')),
+            'env_database_url_unpooled_hash' => $hostHash(env('DATABASE_URL_UNPOOLED')),
+            'env_db_url_hash' => $hostHash(env('DB_URL')),
+            'env_laravel_database_url_hash' => $hostHash(env('LARAVEL_DATABASE_URL')),
+            'config_pgsql_url_hash' => $hostHash(config('database.connections.pgsql.url')),
             'session_driver' => config('session.driver'),
             'cache_store' => config('cache.default'),
             'app_key_configured' => filled(config('app.key')),
