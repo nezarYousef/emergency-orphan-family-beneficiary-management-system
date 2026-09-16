@@ -58,7 +58,7 @@ Production environment values are stored in Vercel, including `APP_ENV=productio
 
 Production: https://emergency-beneficiary-management-nizar9.vercel.app
 
-Vercel project: `emergency-orphan-family-beneficiary-management-system` (renamed while preserving the GitHub integration). The existing stable production alias remains available below.
+Vercel project: `emergency-orphan-family-beneficiary` (renamed to a professional registry-compatible name while preserving the GitHub integration). The existing stable production alias remains available below.
 
 The production image uses FrankenPHP and builds the Vite assets in a Node builder stage. Neon PostgreSQL is connected through Vercel environment variables. `DATABASE_URL` is preferred, followed by `DATABASE_URL_UNPOOLED`, legacy `DB_URL`, and optional `LARAVEL_DATABASE_URL` compatibility in Laravel configuration. CSV export is intentionally Admin-only; Data Entry and Viewer roles receive HTTP 403. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
