@@ -10,43 +10,7 @@ use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\OrphanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/__diagnostic/runtime', function (Request $request) {
-    abort_unless($request->header('X-Codex-Diagnostic') === 'runtime', 404);
-
-    try {
-        $hostLabels = [];
-        $labelHost = function (?string $url) use (&$hostLabels): string {
-            $host = $url ? (parse_url(str_replace('postgres://', 'pgsql://', $url), PHP_URL_HOST) ?: 'invalid') : 'empty';
-            if (! array_key_exists($host, $hostLabels)) {
-                $hostLabels[$host] = 'HOST_'.(count($hostLabels) + 1);
-            }
-
-            return $hostLabels[$host];
-        };
-
-        return response()->json([
-            'db_default' => config('database.default'),
-            'db_driver' => DB::connection()->getDriverName(),
-            'env_database_url' => $labelHost(env('DATABASE_URL')),
-            'env_database_url_unpooled' => $labelHost(env('DATABASE_URL_UNPOOLED')),
-            'env_db_url' => $labelHost(env('DB_URL')),
-            'env_laravel_database_url' => $labelHost(env('LARAVEL_DATABASE_URL')),
-            'config_pgsql_url' => $labelHost(config('database.connections.pgsql.url')),
-            'users' => DB::table('users')->count(),
-            'auth_validate' => Auth::validate(['email' => 'admin@example.com', 'password' => 'password']),
-            'session_driver' => config('session.driver'),
-            'cache_store' => config('cache.default'),
-            'app_key_configured' => filled(config('app.key')),
-        ]);
-    } catch (\Throwable $exception) {
-        return response()->json(['type' => $exception::class, 'message' => $exception->getMessage()], 500);
-    }
-});
 
 Route::view('/', 'landing')->name('home');
 Route::get('/login', [AuthController::class, 'show'])->middleware('guest')->name('login');
