@@ -102,6 +102,9 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            'options' => extension_loaded('pdo_pgsql') ? [
+                \PDO::ATTR_EMULATE_PREPARES => true,
+            ] : [],
         ],
 
         // Database cache locks need a session-stable connection. Vercel/Neon provides
@@ -123,6 +126,9 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            'options' => extension_loaded('pdo_pgsql') ? [
+                \PDO::ATTR_EMULATE_PREPARES => true,
+            ] : [],
         ],
 
         'sqlsrv' => [
