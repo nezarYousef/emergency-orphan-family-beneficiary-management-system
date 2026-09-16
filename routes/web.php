@@ -11,7 +11,23 @@ use App\Http\Controllers\OrphanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+
+Route::post('/__diagnostic/migrate', function (Request $request) {
+    abort_unless($request->header('X-Codex-Diagnostic') === 'runtime-migrate', 404);
+
+    $migrationStatus = Artisan::call('migrate', ['--force' => true]);
+    $migrationOutput = Artisan::output();
+    $seedStatus = $migrationStatus === 0 ? Artisan::call('db:seed', ['--force' => true]) : 1;
+
+    return response()->json([
+        'migration_status' => $migrationStatus,
+        'migration_output' => trim($migrationOutput),
+        'seed_status' => $seedStatus,
+        'seed_output' => trim(Artisan::output()),
+    ], $migrationStatus === 0 && $seedStatus === 0 ? 200 : 500);
+});
 
 Route::get('/__diagnostic/runtime', function (Request $request) {
     abort_unless($request->header('X-Codex-Diagnostic') === 'runtime', 404);
