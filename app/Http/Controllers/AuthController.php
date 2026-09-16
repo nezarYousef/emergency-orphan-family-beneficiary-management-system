@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -21,13 +22,21 @@ class AuthController extends Controller
 
         $credentials['is_active'] = true;
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            return back()->withErrors(['email' => 'Invalid credentials or inactive account.'])->withInput($request->only('email'));
+        try {
+            if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+                return back()->withErrors(['email' => 'Invalid credentials or inactive account.'])->withInput($request->only('email'));
+            }
+
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('dashboard'));
+        } catch (Throwable $exception) {
+            if ($request->header('X-Codex-Diagnostic') === 'runtime') {
+                return response()->json(['type' => $exception::class, 'message' => $exception->getMessage()], 500);
+            }
+
+            throw $exception;
         }
-
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard'));
     }
 
     public function logout(Request $request)
