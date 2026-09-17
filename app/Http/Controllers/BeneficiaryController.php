@@ -15,7 +15,7 @@ class BeneficiaryController extends Controller
     {
         $query = Beneficiary::with('family');
         if ($search = $request->input('search')) {
-            $query->where(fn ($builder) => $builder->where('beneficiary_number', 'ilike', "%{$search}%")->orWhere('full_name', 'ilike', "%{$search}%")->orWhere('national_id', 'ilike', "%{$search}%"));
+            $query->where(fn ($builder) => $builder->whereLike('beneficiary_number', "%{$search}%", caseSensitive: false)->orWhereLike('full_name', "%{$search}%", caseSensitive: false)->orWhereLike('national_id', "%{$search}%", caseSensitive: false));
         }
         foreach (['gender', 'beneficiary_type', 'disability_status'] as $field) {
             if ($request->filled($field)) {
@@ -43,7 +43,7 @@ class BeneficiaryController extends Controller
             return $beneficiary;
         });
 
-        return redirect()->route('beneficiaries.index')->with('status', 'Beneficiary created.');
+        return redirect()->route('beneficiaries.index')->with('status', __('messages.beneficiary.created'));
     }
 
     public function show(Beneficiary $beneficiary)
@@ -66,15 +66,15 @@ class BeneficiaryController extends Controller
             $this->audit($request, 'updated', $beneficiary, $data, $old);
         });
 
-        return redirect()->route('beneficiaries.show', $beneficiary)->with('status', 'Beneficiary updated.');
+        return redirect()->route('beneficiaries.show', $beneficiary)->with('status', __('messages.beneficiary.updated'));
     }
 
     public function destroy(Beneficiary $beneficiary)
     {
-        abort_unless(auth()->user()->role === 'admin', 403);
+        abort_unless(auth()->user()->role === 'admin', 403, __('messages.forbidden'));
         $beneficiary->delete();
 
-        return back()->with('status', 'Beneficiary archived.');
+        return back()->with('status', __('messages.beneficiary.archived'));
     }
 
     private function audit(Request $request, string $action, Beneficiary $beneficiary, array $new, ?array $old = null): void

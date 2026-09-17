@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
- class Orphan extends Model
+class Orphan extends Model
 {
     use SoftDeletes;
 

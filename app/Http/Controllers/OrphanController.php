@@ -18,9 +18,9 @@ class OrphanController extends Controller
 
         if ($search = $request->input('search')) {
             $query->where(function ($builder) use ($search) {
-                $builder->where('orphan_number', 'ilike', "%{$search}%")
-                    ->orWhere('guardian_name', 'ilike', "%{$search}%")
-                    ->orWhereHas('beneficiary', fn ($beneficiary) => $beneficiary->where('full_name', 'ilike', "%{$search}%"));
+                $builder->whereLike('orphan_number', "%{$search}%", caseSensitive: false)
+                    ->orWhereLike('guardian_name', "%{$search}%", caseSensitive: false)
+                    ->orWhereHas('beneficiary', fn ($beneficiary) => $beneficiary->whereLike('full_name', "%{$search}%", caseSensitive: false));
             });
         }
 
@@ -48,7 +48,7 @@ class OrphanController extends Controller
             return $orphan;
         });
 
-        return redirect('/orphans')->with('status', 'Orphan record created.');
+        return redirect('/orphans')->with('status', __('messages.orphan.created'));
     }
 
     public function show(Orphan $orphan)
@@ -74,14 +74,14 @@ class OrphanController extends Controller
             $this->audit($request, 'updated', $orphan, $data);
         });
 
-        return redirect('/orphans/'.$orphan->id)->with('status', 'Orphan record updated.');
+        return redirect('/orphans/'.$orphan->id)->with('status', __('messages.orphan.updated'));
     }
 
     public function destroy(Orphan $orphan)
     {
         $orphan->delete();
 
-        return back()->with('status', 'Orphan record archived.');
+        return back()->with('status', __('messages.orphan.archived'));
     }
 
     private function validated(OrphanRequest $request): array

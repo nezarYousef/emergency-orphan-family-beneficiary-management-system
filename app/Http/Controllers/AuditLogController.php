@@ -13,9 +13,9 @@ class AuditLogController extends Controller
 
         if ($search = $request->input('search')) {
             $query->where(function ($builder) use ($search) {
-                $builder->where('action', 'ilike', "%{$search}%")
-                    ->orWhere('model_type', 'ilike', "%{$search}%")
-                    ->orWhere('description', 'ilike', "%{$search}%");
+                $builder->whereLike('action', "%{$search}%", caseSensitive: false)
+                    ->orWhereLike('model_type', "%{$search}%", caseSensitive: false)
+                    ->orWhereLike('description', "%{$search}%", caseSensitive: false);
             });
         }
 

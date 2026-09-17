@@ -13,14 +13,14 @@ class ExportController extends Controller
 {
     public function __invoke(Request $request, string $type): StreamedResponse
     {
-        abort_unless($request->user()?->canExportData(), 403);
+        abort_unless($request->user()?->canExportData(), 403, __('messages.forbidden'));
 
         $query = match ($type) {
             'families' => $this->families($request),
             'beneficiaries' => $this->beneficiaries($request),
             'orphans' => $this->orphans($request),
             'aid' => $this->aid($request),
-            default => abort(404),
+            default => abort(404, __('messages.not_found')),
         };
 
         return response()->streamDownload(function () use ($query): void {
@@ -31,14 +31,14 @@ class ExportController extends Controller
             foreach ($query->cursor() as $row) {
                 $data = collect($row->toArray())->map(fn ($value) => $this->safeCell($value))->all();
                 if ($first) {
-                    fputcsv($output, array_keys($data));
+                    fputcsv($output, array_map(fn ($column) => __('exports.headings.'.$column), array_keys($data)));
                     $first = false;
                 }
                 fputcsv($output, array_values($data));
             }
 
             if ($first) {
-                fputcsv($output, ['No records found']);
+                fputcsv($output, [__('exports.no_records')]);
             }
             fclose($output);
         }, $type.'-'.now()->format('Ymd').'.csv', [
@@ -49,22 +49,22 @@ class ExportController extends Controller
 
     private function families(Request $request)
     {
-        return Family::query()->when($request->filled('search'), fn ($query) => $query->where(fn ($q) => $q->where('case_number', 'ilike', '%'.$request->search.'%')->orWhere('head_of_household_name', 'ilike', '%'.$request->search.'%')->orWhere('national_id', 'ilike', '%'.$request->search.'%')->orWhere('phone', 'ilike', '%'.$request->search.'%')))->when($request->filled('governorate'), fn ($query) => $query->where('governorate', $request->governorate))->when($request->filled('provider_status'), fn ($query) => $query->where('provider_status', $request->provider_status))->latest();
+        return Family::query()->when($request->filled('search'), fn ($query) => $query->where(fn ($q) => $q->whereLike('case_number', '%'.$request->search.'%', caseSensitive: false)->orWhereLike('head_of_household_name', '%'.$request->search.'%', caseSensitive: false)->orWhereLike('national_id', '%'.$request->search.'%', caseSensitive: false)->orWhereLike('phone', '%'.$request->search.'%', caseSensitive: false)))->when($request->filled('governorate'), fn ($query) => $query->where('governorate', $request->governorate))->when($request->filled('provider_status'), fn ($query) => $query->where('provider_status', $request->provider_status))->latest();
     }
 
     private function beneficiaries(Request $request)
     {
-        return Beneficiary::query()->when($request->filled('search'), fn ($query) => $query->where(fn ($q) => $q->where('beneficiary_number', 'ilike', '%'.$request->search.'%')->orWhere('full_name', 'ilike', '%'.$request->search.'%')->orWhere('national_id', 'ilike', '%'.$request->search.'%')))->when($request->filled('beneficiary_type'), fn ($query) => $query->where('beneficiary_type', $request->beneficiary_type))->when($request->filled('gender'), fn ($query) => $query->where('gender', $request->gender))->latest();
+        return Beneficiary::query()->when($request->filled('search'), fn ($query) => $query->where(fn ($q) => $q->whereLike('beneficiary_number', '%'.$request->search.'%', caseSensitive: false)->orWhereLike('full_name', '%'.$request->search.'%', caseSensitive: false)->orWhereLike('national_id', '%'.$request->search.'%', caseSensitive: false)))->when($request->filled('beneficiary_type'), fn ($query) => $query->where('beneficiary_type', $request->beneficiary_type))->when($request->filled('gender'), fn ($query) => $query->where('gender', $request->gender))->latest();
     }
 
     private function orphans(Request $request)
     {
-        return Orphan::query()->with(['beneficiary', 'family'])->when($request->filled('search'), fn ($query) => $query->where(fn ($q) => $q->where('orphan_number', 'ilike', '%'.$request->search.'%')->orWhere('guardian_name', 'ilike', '%'.$request->search.'%')->orWhereHas('beneficiary', fn ($b) => $b->where('full_name', 'ilike', '%'.$request->search.'%'))))->latest();
+        return Orphan::query()->with(['beneficiary', 'family'])->when($request->filled('search'), fn ($query) => $query->where(fn ($q) => $q->whereLike('orphan_number', '%'.$request->search.'%', caseSensitive: false)->orWhereLike('guardian_name', '%'.$request->search.'%', caseSensitive: false)->orWhereHas('beneficiary', fn ($b) => $b->whereLike('full_name', '%'.$request->search.'%', caseSensitive: false))))->latest();
     }
 
     private function aid(Request $request)
     {
-        return AidDistribution::query()->when($request->filled('search'), fn ($query) => $query->where(fn ($q) => $q->where('aid_type', 'ilike', '%'.$request->search.'%')->orWhere('reference_number', 'ilike', '%'.$request->search.'%')->orWhereHas('family', fn ($family) => $family->where('case_number', 'ilike', '%'.$request->search.'%'))))->latest('distribution_date');
+        return AidDistribution::query()->when($request->filled('search'), fn ($query) => $query->where(fn ($q) => $q->whereLike('aid_type', '%'.$request->search.'%', caseSensitive: false)->orWhereLike('reference_number', '%'.$request->search.'%', caseSensitive: false)->orWhereHas('family', fn ($family) => $family->whereLike('case_number', '%'.$request->search.'%', caseSensitive: false))))->latest('distribution_date');
     }
 
     private function safeCell(mixed $value): mixed

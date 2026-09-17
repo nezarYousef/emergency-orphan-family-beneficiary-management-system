@@ -22,7 +22,7 @@ class AuthController extends Controller
         $credentials['is_active'] = true;
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            return back()->withErrors(['email' => 'Invalid credentials or inactive account.'])->withInput($request->only('email'));
+            return back()->withErrors(['email' => __('auth.failed')])->withInput($request->only('email'));
         }
 
         $request->session()->regenerate();

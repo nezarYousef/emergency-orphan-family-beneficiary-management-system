@@ -1,1 +1,1 @@
-@php($code = 404) @php($title = 'Page not found') @php($heading = 'That page is not here') @php($message = 'The record or page may have moved, been archived, or never existed.') @include('errors.layout')
+@php($code = 404) @php($title = __('errors.404.title')) @php($heading = __('errors.404.heading')) @php($message = __('errors.404.message')) @include('errors.layout')

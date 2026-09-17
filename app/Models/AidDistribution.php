@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
- class AidDistribution extends Model
+class AidDistribution extends Model
 {
     protected $guarded = [];
 

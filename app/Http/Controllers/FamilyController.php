@@ -14,7 +14,7 @@ class FamilyController extends Controller
     {
         $query = Family::query();
         if ($search = $request->input('search')) {
-            $query->where(fn ($builder) => $builder->where('case_number', 'ilike', "%{$search}%")->orWhere('head_of_household_name', 'ilike', "%{$search}%")->orWhere('national_id', 'ilike', "%{$search}%")->orWhere('phone', 'ilike', "%{$search}%"));
+            $query->where(fn ($builder) => $builder->whereLike('case_number', "%{$search}%", caseSensitive: false)->orWhereLike('head_of_household_name', "%{$search}%", caseSensitive: false)->orWhereLike('national_id', "%{$search}%", caseSensitive: false)->orWhereLike('phone', "%{$search}%", caseSensitive: false));
         }
         foreach (['governorate', 'area', 'provider_status', 'vulnerability_status'] as $field) {
             if ($request->filled($field)) {
@@ -42,7 +42,7 @@ class FamilyController extends Controller
             return $family;
         });
 
-        return redirect()->route('families.index')->with('status', 'Family created.');
+        return redirect()->route('families.index')->with('status', __('messages.family.created'));
     }
 
     public function show(Family $family)
@@ -65,15 +65,15 @@ class FamilyController extends Controller
             $this->audit($request, 'updated', $family, $data, $old);
         });
 
-        return redirect()->route('families.show', $family)->with('status', 'Family updated.');
+        return redirect()->route('families.show', $family)->with('status', __('messages.family.updated'));
     }
 
     public function destroy(Family $family)
     {
-        abort_unless(auth()->user()->role === 'admin', 403);
+        abort_unless(auth()->user()->role === 'admin', 403, __('messages.forbidden'));
         $family->delete();
 
-        return redirect()->route('families.index')->with('status', 'Family archived.');
+        return redirect()->route('families.index')->with('status', __('messages.family.archived'));
     }
 
     private function audit(Request $request, string $action, Family $family, array $new, ?array $old = null): void

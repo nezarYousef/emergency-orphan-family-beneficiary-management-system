@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::query()->when($request->filled('search'), fn ($query) => $query->where('name', 'ilike', '%'.$request->search.'%')->orWhere('email', 'ilike', '%'.$request->search.'%'))->latest()->paginate(15)->withQueryString();
+        $users = User::query()->when($request->filled('search'), fn ($query) => $query->whereLike('name', '%'.$request->search.'%', caseSensitive: false)->orWhereLike('email', '%'.$request->search.'%', caseSensitive: false))->latest()->paginate(15)->withQueryString();
 
         return view('users.index', compact('users'));
     }
@@ -25,7 +25,7 @@ class UserController extends Controller
         $data = $this->validated($request);
         User::create($data);
 
-        return redirect()->route('users.index')->with('status', 'User created.');
+        return redirect()->route('users.index')->with('status', __('messages.user.created'));
     }
 
     public function edit(User $user)
@@ -41,15 +41,15 @@ class UserController extends Controller
         }
         $user->update($data);
 
-        return redirect()->route('users.index')->with('status', 'User updated.');
+        return redirect()->route('users.index')->with('status', __('messages.user.updated'));
     }
 
     public function destroy(User $user)
     {
-        abort_if($user->is(auth()->user()), 422, 'You cannot deactivate your own account.');
+        abort_if($user->is(auth()->user()), 422, __('messages.user.cannot_deactivate_self'));
         $user->update(['is_active' => false]);
 
-        return redirect()->route('users.index')->with('status', 'User deactivated.');
+        return redirect()->route('users.index')->with('status', __('messages.user.deactivated'));
     }
 
     private function validated(Request $request, ?User $user = null): array

@@ -18,9 +18,9 @@ class AidDistributionController extends Controller
 
         if ($search = $request->input('search')) {
             $query->where(function ($builder) use ($search) {
-                $builder->where('aid_type', 'ilike', "%{$search}%")
-                    ->orWhere('reference_number', 'ilike', "%{$search}%")
-                    ->orWhereHas('family', fn ($family) => $family->where('case_number', 'ilike', "%{$search}%"));
+                $builder->whereLike('aid_type', "%{$search}%", caseSensitive: false)
+                    ->orWhereLike('reference_number', "%{$search}%", caseSensitive: false)
+                    ->orWhereHas('family', fn ($family) => $family->whereLike('case_number', "%{$search}%", caseSensitive: false));
             });
         }
 
@@ -47,7 +47,7 @@ class AidDistributionController extends Controller
             return $distribution;
         });
 
-        return redirect('/aid-distributions')->with('status', 'Aid distribution recorded.');
+        return redirect('/aid-distributions')->with('status', __('messages.aid.created'));
     }
 
     public function show(AidDistribution $aidDistribution)
@@ -73,14 +73,14 @@ class AidDistributionController extends Controller
             $this->audit($request, 'updated', $aidDistribution, $data);
         });
 
-        return redirect('/aid-distributions/'.$aidDistribution->id)->with('status', 'Aid distribution updated.');
+        return redirect('/aid-distributions/'.$aidDistribution->id)->with('status', __('messages.aid.updated'));
     }
 
     public function destroy(AidDistribution $aidDistribution)
     {
         $aidDistribution->delete();
 
-        return redirect('/aid-distributions')->with('status', 'Aid distribution removed.');
+        return redirect('/aid-distributions')->with('status', __('messages.aid.removed'));
     }
 
     private function validated(AidDistributionRequest $request): array

@@ -7,16 +7,17 @@ use App\Http\Controllers\BeneficiaryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FamilyController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\OrphanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'landing')->name('home');
+Route::post('/locale', LocaleController::class)->name('locale.update');
 Route::get('/login', [AuthController::class, 'show'])->middleware('guest')->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware(['guest', 'throttle:login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');

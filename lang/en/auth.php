@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'failed' => 'Invalid credentials or inactive account.',
+    'password' => 'The password is incorrect.',
+    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'title' => 'Sign in | CareTrack',
+    'sign_in' => 'Sign in',
+    'sign_out' => 'Sign out',
+    'skip_to_sign_in' => 'Skip to sign in',
+    'home_label' => 'Return to CareTrack home',
+    'operations' => 'Humanitarian operations',
+    'secure_workspace' => 'Secure workspace',
+    'story_title' => 'Keep every case moving with care.',
+    'story_description' => 'One shared picture for the people coordinating family support, beneficiary services, and aid distributions.',
+    'demo_notice' => 'Demo environment · Fictional data only',
+    'back_home' => 'Back to public home',
+    'welcome_back' => 'Welcome back',
+    'sign_in_description' => 'Sign in to your operations workspace.',
+    'unable_to_sign_in' => 'Unable to sign in.',
+    'email' => 'Email',
+    'email_help' => 'Use your assigned workspace email.',
+    'password_label' => 'Password',
+    'remember' => 'Remember me',
+    'demo_access' => 'Demo access',
+];

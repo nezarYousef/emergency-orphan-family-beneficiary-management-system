@@ -7,6 +7,8 @@ use Illuminate\Validation\Rule;
 
 class AidDistributionRequest extends FormRequest
 {
+    public const AID_TYPES = ['cash', 'food', 'medical', 'education', 'hygiene'];
+
     public function authorize(): bool
     {
         return auth()->check() && in_array(auth()->user()->role, ['admin', 'data_entry'], true);
@@ -17,7 +19,7 @@ class AidDistributionRequest extends FormRequest
         return [
             'family_id' => ['nullable', 'required_without:beneficiary_id', 'exists:families,id'],
             'beneficiary_id' => ['nullable', 'required_without:family_id', 'exists:beneficiaries,id'],
-            'aid_type' => ['required', 'string', 'max:100'],
+            'aid_type' => ['required', 'string', 'max:100', Rule::in(self::AID_TYPES)],
             'distribution_date' => ['required', 'date'],
             'quantity' => ['nullable', 'numeric', 'min:0'],
             'amount' => ['nullable', 'numeric', 'min:0'],
