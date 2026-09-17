@@ -10,49 +10,7 @@ use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\OrphanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
-
-Route::post('/__diagnostic/migrate', function (Request $request) {
-    abort_unless($request->header('X-Codex-Diagnostic') === 'runtime-migrate', 404);
-
-    $migrationStatus = Artisan::call('migrate', ['--force' => true]);
-    $migrationOutput = Artisan::output();
-    $seedStatus = $migrationStatus === 0 ? Artisan::call('db:seed', ['--force' => true]) : 1;
-
-    return response()->json([
-        'migration_status' => $migrationStatus,
-        'migration_output' => trim($migrationOutput),
-        'seed_status' => $seedStatus,
-        'seed_output' => trim(Artisan::output()),
-    ], $migrationStatus === 0 && $seedStatus === 0 ? 200 : 500);
-});
-
-Route::get('/__diagnostic/runtime', function (Request $request) {
-    abort_unless($request->header('X-Codex-Diagnostic') === 'runtime', 404);
-
-    try {
-        $hostHash = function (?string $url): string {
-            $host = $url ? (parse_url(str_replace('postgres://', 'pgsql://', $url), PHP_URL_HOST) ?: 'invalid') : 'empty';
-
-            return substr(hash('sha256', $host), 0, 12);
-        };
-
-        return response()->json([
-            'env_database_url_hash' => $hostHash(env('DATABASE_URL')),
-            'env_database_url_unpooled_hash' => $hostHash(env('DATABASE_URL_UNPOOLED')),
-            'env_db_url_hash' => $hostHash(env('DB_URL')),
-            'env_laravel_database_url_hash' => $hostHash(env('LARAVEL_DATABASE_URL')),
-            'config_pgsql_url_hash' => $hostHash(config('database.connections.pgsql.url')),
-            'session_driver' => config('session.driver'),
-            'cache_store' => config('cache.default'),
-            'app_key_configured' => filled(config('app.key')),
-        ]);
-    } catch (\Throwable $exception) {
-        return response()->json(['type' => $exception::class, 'message' => $exception->getMessage()], 500);
-    }
-});
 
 Route::view('/', 'landing')->name('home');
 Route::get('/login', [AuthController::class, 'show'])->middleware('guest')->name('login');
