@@ -3,6 +3,7 @@ name: Tests
 on:
   push:
     branches:
+      - main
       - master
       - '*.x'
   pull_request:
@@ -15,6 +16,12 @@ permissions:
 jobs:
   tests:
     runs-on: ubuntu-latest
+
+    env:
+      # PostgreSQL coverage is provided by the CI workflow; this matrix keeps
+      # the focused framework test job self-contained and deterministic.
+      DB_CONNECTION: sqlite
+      DB_DATABASE: database/database.sqlite
 
     strategy:
       fail-fast: true
@@ -42,6 +49,9 @@ jobs:
 
       - name: Copy environment file
         run: cp .env.example .env
+
+      - name: Prepare SQLite database
+        run: touch database/database.sqlite
 
       - name: Generate app key
         run: php artisan key:generate
